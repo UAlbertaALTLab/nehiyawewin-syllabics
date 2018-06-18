@@ -50,7 +50,7 @@ codas = {
     'FINAL RIGHT HALF RING':                  'n',
     'FINAL TOP HALF RING':                    's',
     'FINAL DOUBLE SHORT VERTICAL STROKES':    'h',
-    'FINAL PLUS':                             'y',
+    'WEST-CREE Y':                            'y',
     'FINAL RING':                             'w',
     'HK':                                     'hk',
 }
