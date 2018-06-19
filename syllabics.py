@@ -37,11 +37,11 @@ from collections import OrderedDict
 
 COMBINING_CIRCUMFLEX_ACCENT = '\u0302'  # ◌̂
 
-# Matches an optional onset and a coda.
+# Matches an optional onset and a vowel.
 pattern = re.compile(r'^(?:[PTCKSMNWY]W?)?([AIOE])\1?$')
 
 # Partial Unicode names and their SRO equivalents.
-codas = {
+consonants = {
     'WEST-CREE P':                            'p',
     'FINAL ACUTE':                            't',
     'FINAL GRAVE':                            'k',
@@ -70,7 +70,7 @@ class Syllabic(ABC):
     Important subclasses:
      - Syllable
      - Vowel
-     - Final
+     - Consonant
     """
     __slots__ = 'character',
 
@@ -92,7 +92,7 @@ class Syllabic(ABC):
     @property
     def kind(self) -> str:
         """
-        Return 'syllable', 'vowel', or 'final' as appropriate?
+        Return 'syllable', 'vowel', or 'consonant' as appropriate?
         """
         return type(self).__name__.lower()
 
@@ -254,20 +254,20 @@ class Vowel(SyllabicWithVowelBase):
         return self.vowel + cont
 
 
-class Final(Syllabic):
+class Consonant(Syllabic):
     has_vowel = False
     has_consonant = True
 
     @property
     def consonant(self):
         if self.sro == 'hk':
-            raise AttributeError('Not a simple final')
+            raise AttributeError('Not a simple consonant')
         return self.sro
 
     @property
     def sro(self) -> str:
         description = self.name[len('CANADIAN SYLLABICS '):]
-        return codas[description]
+        return consonants[description]
 
     @property
     def vim_digraph(self):
@@ -313,8 +313,8 @@ for i in range(0x1400, 0x1680):
     if pattern.match(syllable):
         variants = onsets_nucleus.setdefault(syllable, set())
         variants.add((graph, tuple(desc[:-1])))
-    elif desc_str in codas:
-        roster.add(Final(character=graph))
+    elif desc_str in consonants:
+        roster.add(Consonant(character=graph))
 
 # For syllabics with multiple variants, pick the most appropriate one.
 for syllable, variants in onsets_nucleus.items():
