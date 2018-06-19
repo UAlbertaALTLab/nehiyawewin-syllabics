@@ -40,7 +40,7 @@ COMBINING_CIRCUMFLEX_ACCENT = '\u0302'  # ◌̂
 # Matches an optional onset and a coda.
 pattern = re.compile(r'^(?:[PTCKSMNWY]W?)?([AIOE])\1?$')
 
-# Partial Unicode names and their SRO equivilent.
+# Partial Unicode names and their SRO equivalents.
 codas = {
     'WEST-CREE P':                            'p',
     'FINAL ACUTE':                            't',
@@ -53,6 +53,9 @@ codas = {
     'WEST-CREE Y':                            'y',
     'FINAL RING':                             'w',
     'HK':                                     'hk',
+    # Used in loanwords only:
+    'MEDIAL L':                               'l',
+    'MEDIAL R':                               'r',
 }
 
 roster: Set['Syllabic'] = set()
