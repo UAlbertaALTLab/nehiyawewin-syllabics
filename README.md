@@ -11,7 +11,7 @@ Column         | Description
 cans           | The syllabic character. "Cans" is the [ISO 15924][] code for the Canadian Aborignal Syllabics script.
 latn           | The syllabics equivalent in Standard Roman Orthography (SRO), with circumflexes (◌̂) for long vowels.
 scalar.value   | The Unicode code point written as a decimal number (See also `code.point`).
-kind           | Either **syllable** (like "ᐘ"), **vowel** (like "ᐋ"), or **final** (like "ᐤ").
+kind           | Either **syllable** (like "ᐘ"), **vowel** (like "ᐋ"), or **consonant** (like "ᐤ").
 has.vowel      | `TRUE` if the syllabic "contains" a vowel (aioâêîô).
 has.long.vowel | `TRUE` when the syllabic "contains" a long vowel (âêîô)
 vowel          | The vowel that the syllabic "contains", written in SRO.
