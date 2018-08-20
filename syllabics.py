@@ -135,7 +135,7 @@ class Syllabic(ABC):
             ('vowel_with_length', 'vowel'),
             ('has_consonant', 'has.consonant'),
             ('consonant', 'consonant'),
-            ('is_labialized', 'has.w'),
+            ('has_w', 'has.w'),
             ('vim_digraph', 'vim.digraph'),
             ('code_point', 'code.point'),
             ('name', 'unicode.name'),
@@ -222,6 +222,10 @@ class Syllable(SyllabicWithVowelBase):
     @property
     def is_labialized(self) -> bool:
         return self.syllable[1:2] == 'W'
+
+    @property
+    def has_w(self) -> bool:
+        return self.is_labialized or self.consonant == 'w'
 
     @property
     def sro(self) -> str:
