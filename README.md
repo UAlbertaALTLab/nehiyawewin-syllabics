@@ -37,12 +37,43 @@ Python 3.6.
 
 [syllabics.py]: ./syllabics.py
 
+
+look-alikes.tsv
+---------------
+
+[look-alikes.tsv][] is a tab-separated file that contains characters
+that are easily mistaken for more appropriate Cree syllabics characters.
+These characters are [documented here][crk-docs].
+
+Column            | Description
+----------------- | -----------
+lookalike         | The look-alike (that is, incorrect) character.
+actual            | The correct character.
+code.point        | [informative] Code point of the look-alike character in "U+" notation.
+actual.code.point | [informative] Code point of the correct character in "U+" notation.
+name              | [informative] The canonical name of the look-alike in the Unicode character database.
+
+
+Here's an example of using [look-alikes.tsv] in a shell script to replace look-alikes in pipeline with the appropriate character.
+
+```sh
+function fixlookalikes() {
+    tr $(awk -F"\t" 'NR > 1 { from=from $1; to=to $2 } END { print from, to }' < look-alikes.tsv)
+}
+
+fixlookalikes <bad-file.txt > good-file.txt
+```
+
+[look-alikes.tsv]: ./look-alikes.tsv
+[crk-docs]: https://crk-orthography.readthedocs.io/en/stable/#crk_orthography.syllabics2sro
+
+
 Licenses
 --------
 
-You can freely use [syllabics.tsv][] for any purpose, without
-attribution. [syllabics.tsv][] is released under the terms of the [CC0
-1.0][] license.
+You can freely use [syllabics.tsv][] [look-alikes.tsv][] for any
+purpose, without attribution. [syllabics.tsv][] and [look-alikes.tsv][]
+are released under the terms of the [CC0 1.0][] license.
 
 `syllabics.py` is licensed under the terms of the [GNU General Public
 License, v3][GPLv3]. Copyright © 2018 Eddie Antonio Santos.
