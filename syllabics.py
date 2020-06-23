@@ -52,6 +52,7 @@ consonants = {
     "FINAL DOUBLE SHORT VERTICAL STROKES": "h",
     # TODO: Use FINAL PLUS instead?
     "WEST-CREE Y": "y",
+    "TH-CREE TH": "th",
     "FINAL RING": "w",
     "HK": "hk",
     # Used in loanwords only:
@@ -284,6 +285,10 @@ class Syllable(SyllabicWithVowelBase):
     @property
     def vim_digraph(self) -> str:
         consonant = self.consonant
+
+        if len(consonant) > 1:
+            return ""
+
         vowel = self.vowel
         if self.is_labialized:
             consonant = consonant.upper()
@@ -340,6 +345,9 @@ class Consonant(Syllabic):
     def vim_digraph(self):
         if self.sro == "hk":
             return "hk"
+        elif self.sro == "th":
+            # XXX: no digraphs for th cree :/
+            return ""
         return self.sro + "."
 
     @property
@@ -353,7 +361,7 @@ class Consonant(Syllabic):
 
 def choose_appropriate_variant(variants) -> None:
     for graph, desc in variants:
-        if "WEST-CREE" in desc:
+        if "WEST-CREE" in desc or "WOODS-CREE" in desc:
             roster.add(SyllabicWithVowelBase.new(graph))
             return
     for graph, desc in variants:
@@ -385,11 +393,18 @@ for i in range(0x1400, 0x1680):
     syllable = desc[-1]
     desc_str = " ".join(desc)
 
+    # XXX: this is... not great :/
     if pattern.match(syllable):
         variants = onsets_nucleus.setdefault(syllable, set())
         variants.add((graph, tuple(desc[:-1])))
     elif desc_str in consonants:
         roster.add(Consonant(character=graph))
+    elif "TH-CREE" in desc:
+        variants = onsets_nucleus.setdefault(syllable, set())
+        variants.add((graph, tuple(desc[:-1])))
+    elif "WOODS-CREE" in desc and "THW" in desc_str:
+        variants = onsets_nucleus.setdefault(syllable, set())
+        variants.add((graph, tuple(desc[:-1])))
 
 # For syllabics with multiple variants, pick the most appropriate one.
 for syllable, variants in onsets_nucleus.items():
