@@ -6,7 +6,7 @@ every Canadian Aboriginal syllabic character used to write nêhiyawêwin
 (Plains Cree). For each character, this file contains the following
 information:
 
-#  | Column          | Description
+\# | Column          | Description
 -- | --------------- | -----------
  1 | cans            | The syllabic character. "Cans" is the [ISO 15924][] code for the Canadian Aborignal Syllabics script.
  2 | latn            | The syllabics equivalent in Standard Roman Orthography (SRO), with circumflexes (◌̂) for long vowels.
