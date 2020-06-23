@@ -6,21 +6,25 @@ every Canadian Aboriginal syllabic character used to write nêhiyawêwin
 (Plains Cree). For each character, this file contains the following
 information:
 
-Column         | Description
--------------- | -----------
-cans           | The syllabic character. "Cans" is the [ISO 15924][] code for the Canadian Aborignal Syllabics script.
-latn           | The syllabics equivalent in Standard Roman Orthography (SRO), with circumflexes (◌̂) for long vowels.
-scalar.value   | The Unicode code point written as a decimal number (See also `code.point`).
-kind           | Either **syllable** (like "ᐘ"), **vowel** (like "ᐋ"), or **consonant** (like "ᐤ").
-has.vowel      | `TRUE` if the syllabic "contains" a vowel (aioâêîô).
-has.long.vowel | `TRUE` when the syllabic "contains" a long vowel (âêîô)
-vowel          | The vowel that the syllabic "contains", written in SRO.
-has.consonant  | `TRUE` if the syllable "contains" a consonant.
-consonant      | The consonant that the syllabic "contains", written in SRO.
-has.w          | For syllables, it's `TRUE` if the syllable has an intervening "w" like ᑢ ("twa") vs ᑕ ("ta").
-vim.digraph    | Digraph defined in the [nêhiyawêwin Vim plugin][vim-plugin].
-code.point     | Unicode code point, written in "U+ notation.
-unicode.name   | The syllabic's canoncial name as given in the Unicode character database.
+#  | Column          | Description
+-- | --------------- | -----------
+ 1 | cans            | The syllabic character. "Cans" is the [ISO 15924][] code for the Canadian Aborignal Syllabics script.
+ 2 | latn            | The syllabics equivalent in Standard Roman Orthography (SRO), with circumflexes (◌̂) for long vowels.
+ 3 | scalar.value    | The Unicode code point written as a decimal number (See also `code.point`).
+ 4 | kind            | Either **syllable** (like "ᐘ"), **vowel** (like "ᐋ"), or **consonant** (like "ᐤ").
+ 5 | has.vowel       | `TRUE` if the syllabic "contains" a vowel (aioâêîô).
+ 6 | has.long.vowel  | `TRUE` when the syllabic "contains" a long vowel (âêîô)
+ 7 | vowel           | The vowel that the syllabic "contains", written in SRO.
+ 8 | has.consonant   | `TRUE` if the syllable "contains" a consonant.
+ 9 | consonant       | The consonant that the syllabic "contains", written in SRO.
+10 | has.w           | For syllables, it's `TRUE` if the syllable has an intervening "w" like ᑢ ("twa") vs ᑕ ("ta").
+11 | in.plains.cree  | `TRUE` if used in nêhiyawêwin (Y-dialect)
+12 | in.woods.cree   | `TRUE` if used in nīhithawīwin (Th-dialect)
+13 | in.swampy.cree  | `TRUE` if used in nêhinawêwin (N-dialect)
+14 | qwerty.mnemonic | What to type on a QWERTY "build-a-syllable" layout to get this character
+15 | vim.digraph     | Digraph defined in the [nêhiyawêwin Vim plugin][vim-plugin].
+16 | code.point      | Unicode code point, written in "U+ notation.
+17 | unicode.name    | The syllabic's canoncial name as given in the Unicode character database.
 
 [syllabics.tsv]: ./syllabics.tsv
 [ISO 15924]: https://www.unicode.org/iso15924/iso15924-num.html
