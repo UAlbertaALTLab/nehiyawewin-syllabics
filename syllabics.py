@@ -31,6 +31,7 @@ import sys
 from abc import ABC, abstractmethod
 from collections import OrderedDict
 from functools import total_ordering
+from itertools import chain
 from string import printable as ascii_printable
 from typing import Any, Dict, NamedTuple, Optional, Set
 from unicodedata import name, normalize
@@ -384,8 +385,14 @@ def to_r(thing: Any) -> Any:
     return thing
 
 
+UNIFIED_CANADIAN_ABORGINAL_SYLLABICS = range(0x1400, 0x1680)
+UNIFIED_CANADIAN_ABORGINAL_SYLLABICS_EXTENDED = range(0x18B0, 0x18F6)
+ALL_SYLLABICS = chain(
+    UNIFIED_CANADIAN_ABORGINAL_SYLLABICS, UNIFIED_CANADIAN_ABORGINAL_SYLLABICS_EXTENDED
+)
+
 # Find all elligible syllabics.
-for i in range(0x1400, 0x1680):
+for i in ALL_SYLLABICS:
     graph = chr(i)
     c, s, *desc = name(graph).split()
     assert f"{c} {s}" == "CANADIAN SYLLABICS", f"{graph} {name(graph)}"
