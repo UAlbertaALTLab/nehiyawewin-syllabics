@@ -51,8 +51,7 @@ consonants = {
     "FINAL RIGHT HALF RING": "n",
     "FINAL TOP HALF RING": "s",
     "FINAL DOUBLE SHORT VERTICAL STROKES": "h",
-    # TODO: Use FINAL PLUS instead?
-    "WEST-CREE Y": "y",
+    "FINAL PLUS": "y",
     "TH-CREE TH": "th",
     "FINAL RING": "w",
     "HK": "hk",

@@ -1,4 +1,4 @@
-lookalike	actual	code.point	actual.code.point	name
-ᐩ	ᕀ	U+1429	U+1540	CANADIAN SYLLABICS FINAL PLUS
-ᑦ	ᒼ	U+1466	U+14BC	CANADIAN SYLLABICS T
-ᕁ	ᕽ	U+1541	U+157D	CANADIAN SYLLABICS SAYISI YI
+lookalike	actual	code.point	actual.code.point	name	comment
+ᕀ	ᐩ	U+1540	U+1429	CANADIAN SYLLABICS WEST-CREE Y	This character has a misleading name; I used to think the opposite, but Cree writers prefer the rendering of FINAL PLUS—slightly higher than WEST-CREE FINAL Y
+ᑦ	ᒼ	U+1466	U+14BC	CANADIAN SYLLABICS T	They render similarly, but WEST-CREE M is correct.
+ᕁ	ᕽ	U+1541	U+157D	CANADIAN SYLLABICS SAYISI YI	They render similarly, but this one represents HK.
