@@ -268,7 +268,7 @@ class Syllable(SyllabicWithVowelBase):
 
     @property
     def is_labialized(self) -> bool:
-        return self.syllable[1:2] == "W"
+        return "W" in self.syllable[1:]
 
     @property
     def has_w(self) -> bool:
