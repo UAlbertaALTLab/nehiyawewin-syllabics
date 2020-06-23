@@ -25,40 +25,41 @@ Generates a either a tab-separated values file with header, or a series of Vim
 digraph definitions for each character.
 """
 
-import re
 import csv
+import re
 import sys
 from abc import ABC, abstractmethod
+from collections import OrderedDict
 from functools import total_ordering
 from string import printable as ascii_printable
-from typing import NamedTuple, Set, Dict, Optional, Any
+from typing import Any, Dict, NamedTuple, Optional, Set
 from unicodedata import name, normalize
-from collections import OrderedDict
 
-COMBINING_CIRCUMFLEX_ACCENT = '\u0302'  # ◌̂
+COMBINING_CIRCUMFLEX_ACCENT = "\u0302"  # ◌̂
 
 # Matches an optional onset and a vowel.
-pattern = re.compile(r'^(?:[PTCKSMNWY]W?)?([AIOE])\1?$')
+pattern = re.compile(r"^(?:[PTCKSMNWY]W?)?([AIOE])\1?$")
 
 # Partial Unicode names and their SRO equivalents.
 consonants = {
-    'WEST-CREE P':                            'p',
-    'FINAL ACUTE':                            't',
-    'FINAL GRAVE':                            'k',
-    'FINAL SHORT HORIZONTAL STROKE':          'c',
-    'WEST-CREE M':                            'm',
-    'FINAL RIGHT HALF RING':                  'n',
-    'FINAL TOP HALF RING':                    's',
-    'FINAL DOUBLE SHORT VERTICAL STROKES':    'h',
-    'WEST-CREE Y':                            'y',
-    'FINAL RING':                             'w',
-    'HK':                                     'hk',
+    "WEST-CREE P": "p",
+    "FINAL ACUTE": "t",
+    "FINAL GRAVE": "k",
+    "FINAL SHORT HORIZONTAL STROKE": "c",
+    "WEST-CREE M": "m",
+    "FINAL RIGHT HALF RING": "n",
+    "FINAL TOP HALF RING": "s",
+    "FINAL DOUBLE SHORT VERTICAL STROKES": "h",
+    # TODO: Use FINAL PLUS instead?
+    "WEST-CREE Y": "y",
+    "FINAL RING": "w",
+    "HK": "hk",
     # Used in loanwords only:
-    'MEDIAL L':                               'l',
-    'MEDIAL R':                               'r',
+    "MEDIAL L": "l",
+    "MEDIAL R": "r",
 }
 
-roster: Set['Syllabic'] = set()
+roster: Set["Syllabic"] = set()
 onsets_nucleus = {}  # type: ignore
 
 
@@ -72,7 +73,8 @@ class Syllabic(ABC):
      - Vowel
      - Consonant
     """
-    __slots__ = 'character',
+
+    __slots__ = ("character",)
 
     has_vowel: bool
     has_consonant: bool
@@ -87,7 +89,7 @@ class Syllabic(ABC):
         Return the code point in U+ notation.
         """
         assert self.scalar_value <= 0xFFFF
-        return f'U+{self.scalar_value:04X}'
+        return f"U+{self.scalar_value:04X}"
 
     @property
     def kind(self) -> str:
@@ -124,21 +126,55 @@ class Syllabic(ABC):
         Return an appropriate Vim digraph for this character.
         """
 
+    @property
+    @abstractmethod
+    def qwerty_mnemonic(self) -> str:
+        """
+        Return a mnemonic to type it on a qwerty keyboard.
+        """
+
+    @property
+    @abstractmethod
+    def in_plains_cree(self) -> bool:
+        """
+        Is this in Plains Cree?
+        """
+
+    @property
+    def in_woods_cree(self) -> bool:
+        """
+        Is this in Woods Cree?
+        """
+        # Woods Cree includes ALL OF THE WESTERN CREE SYLLABICS!
+        return True
+
+    @property
+    def in_swampy_cree(self) -> bool:
+        """
+        Is this in Woods Cree?
+        """
+        # ¯\_(ツ)_/¯
+        return self.in_plains_cree
+
     def to_dict(self) -> Dict[str, Any]:
         attrs = [
-            ('character', 'cans'),
-            ('sro', 'latn'),
-            ('scalar_value', 'scalar.value'),
-            ('kind', ''),
-            ('has_vowel', 'has.vowel'),
-            ('has_long_vowel', 'has.long.vowel'),
-            ('vowel_with_length', 'vowel'),
-            ('has_consonant', 'has.consonant'),
-            ('consonant', 'consonant'),
-            ('has_w', 'has.w'),
-            ('vim_digraph', 'vim.digraph'),
-            ('code_point', 'code.point'),
-            ('name', 'unicode.name'),
+            ("character", "cans"),
+            ("sro", "latn"),
+            ("scalar_value", "scalar.value"),
+            ("kind", ""),
+            ("has_vowel", "has.vowel"),
+            ("has_long_vowel", "has.long.vowel"),
+            ("vowel_with_length", "vowel"),
+            ("has_consonant", "has.consonant"),
+            ("consonant", "consonant"),
+            ("has_w", "has.w"),
+            ("in_plains_cree", "in.plains.cree"),
+            ("in_woods_cree", "in.woods.cree"),
+            ("in_swampy_cree", "in.swampy.cree"),
+            ("qwerty_mnemonic", "qwerty.mnemonic"),
+            ("vim_digraph", "vim.digraph"),
+            ("code_point", "code.point"),
+            ("name", "unicode.name"),
         ]
 
         def generate_pairs():
@@ -148,6 +184,7 @@ class Syllabic(ABC):
                 except (AttributeError, ValueError):
                     value = None
                 yield (alias or attr, to_r(value))
+
         return OrderedDict(generate_pairs())
 
     def __lt__(self, other):
@@ -172,7 +209,8 @@ class SyllabicWithVowelBase(Syllabic):
     """
     Base class for any syllabic that has a vowel.
     """
-    VOWELS = 'AEIO'
+
+    VOWELS = "AEIO"
 
     has_vowel = True
 
@@ -191,11 +229,11 @@ class SyllabicWithVowelBase(Syllabic):
     def vowel_with_length(self) -> str:
         if not self.has_long_vowel:
             return self.vowel
-        return normalize('NFC', self.vowel + COMBINING_CIRCUMFLEX_ACCENT)
+        return normalize("NFC", self.vowel + COMBINING_CIRCUMFLEX_ACCENT)
 
     @property
     def has_long_vowel(self) -> bool:
-        if self.vowel == 'e':
+        if self.vowel == "e":
             return True
         elif len(self.syllable) < 2:
             return False
@@ -203,8 +241,15 @@ class SyllabicWithVowelBase(Syllabic):
             return True
         return False
 
+    @property
+    def _qwerty_mnemonic_for_vowel(self) -> str:
+        if self.vowel == "e" or not self.has_long_vowel:
+            return self.vowel
+        else:
+            return self.vowel * 2
+
     @classmethod
-    def new(cls, character: str) -> 'SyllabicWithVowelBase':
+    def new(cls, character: str) -> "SyllabicWithVowelBase":
         syllable_name = name(character).split()[-1]
         if syllable_name[0:1] in cls.VOWELS:
             return Vowel(character)
@@ -217,20 +262,22 @@ class Syllable(SyllabicWithVowelBase):
 
     @property
     def consonant(self) -> str:
+        if self.syllable.startswith("TH"):
+            return "th"
         return self.syllable[0].lower()
 
     @property
     def is_labialized(self) -> bool:
-        return self.syllable[1:2] == 'W'
+        return self.syllable[1:2] == "W"
 
     @property
     def has_w(self) -> bool:
-        return self.is_labialized or self.consonant == 'w'
+        return self.is_labialized or self.consonant == "w"
 
     @property
     def sro(self) -> str:
         c = self.consonant
-        w = 'w' if self.is_labialized else ''
+        w = "w" if self.is_labialized else ""
         v = self.vowel_with_length
         return f"{c}{w}{v}"
 
@@ -240,9 +287,17 @@ class Syllable(SyllabicWithVowelBase):
         vowel = self.vowel
         if self.is_labialized:
             consonant = consonant.upper()
-        if self.vowel != 'e' and self.has_long_vowel:
+        if self.vowel != "e" and self.has_long_vowel:
             vowel = vowel.upper()
         return consonant + vowel
+
+    @property
+    def in_plains_cree(self):
+        return self.consonant != "th"
+
+    @property
+    def qwerty_mnemonic(self):
+        return self.consonant + self._qwerty_mnemonic_for_vowel
 
 
 class Vowel(SyllabicWithVowelBase):
@@ -254,8 +309,16 @@ class Vowel(SyllabicWithVowelBase):
 
     @property
     def vim_digraph(self):
-        cont = ':' if self.has_long_vowel else '.'
+        cont = ":" if self.has_long_vowel else "."
         return self.vowel + cont
+
+    @property
+    def qwerty_mnemonic(self):
+        return self._qwerty_mnemonic_for_vowel
+
+    @property
+    def in_plains_cree(self):
+        return True
 
 
 class Consonant(Syllabic):
@@ -264,25 +327,33 @@ class Consonant(Syllabic):
 
     @property
     def consonant(self):
-        if self.sro == 'hk':
-            raise AttributeError('Not a simple consonant')
+        if self.sro == "hk":
+            raise AttributeError("Not a simple consonant")
         return self.sro
 
     @property
     def sro(self) -> str:
-        description = self.name[len('CANADIAN SYLLABICS '):]
+        description = self.name[len("CANADIAN SYLLABICS ") :]
         return consonants[description]
 
     @property
     def vim_digraph(self):
-        if self.sro == 'hk':
-            return 'hk'
-        return self.sro + '.'
+        if self.sro == "hk":
+            return "hk"
+        return self.sro + "."
+
+    @property
+    def in_plains_cree(self):
+        return self.consonant != "th"
+
+    @property
+    def qwerty_mnemonic(self):
+        return self.sro
 
 
 def choose_appropriate_variant(variants) -> None:
     for graph, desc in variants:
-        if 'WEST-CREE' in desc:
+        if "WEST-CREE" in desc:
             roster.add(SyllabicWithVowelBase.new(graph))
             return
     for graph, desc in variants:
@@ -309,10 +380,10 @@ def to_r(thing: Any) -> Any:
 for i in range(0x1400, 0x1680):
     graph = chr(i)
     c, s, *desc = name(graph).split()
-    assert f'{c} {s}' == 'CANADIAN SYLLABICS', f'{graph} {name(graph)}'
+    assert f"{c} {s}" == "CANADIAN SYLLABICS", f"{graph} {name(graph)}"
 
     syllable = desc[-1]
-    desc_str = ' '.join(desc)
+    desc_str = " ".join(desc)
 
     if pattern.match(syllable):
         variants = onsets_nucleus.setdefault(syllable, set())
@@ -326,7 +397,7 @@ for syllable, variants in onsets_nucleus.items():
         choose_appropriate_variant(variants)
     else:
         graph, desc = first(variants)
-        if 'CARRIER' in desc:
+        if "CARRIER" in desc:
             continue
         roster.add(SyllabicWithVowelBase.new(graph))
 
@@ -340,9 +411,7 @@ def create_tsv() -> None:
     """
     any_syllablic = first(plains_cree_syllabics)
     fields = any_syllablic.to_dict().keys()
-    writer = csv.DictWriter(sys.stdout,
-                            fieldnames=fields,
-                            delimiter='\t')
+    writer = csv.DictWriter(sys.stdout, fieldnames=fields, delimiter="\t")
     writer.writeheader()
     for syllabic in plains_cree_syllabics:
         writer.writerow(syllabic.to_dict())
@@ -357,17 +426,19 @@ def create_vim_digraphs() -> None:
         digraph = syllabic.vim_digraph
         assert len(digraph) == 2, f"not exactly 2 characters: {syllabic}"
         assert digraph not in all_digraphs, f"Already saw digraph: {syllabic}"
-        assert all(c in ascii_printable for c in digraph), (
-                f"Non-ASCII digraph: {digraph}"
-        )
+        assert all(
+            c in ascii_printable for c in digraph
+        ), f"Non-ASCII digraph: {digraph}"
 
-        print(f"digraph {digraph} {syllabic.scalar_value:d}",
-              f"\" {syllabic.character} {syllabic.code_point} {syllabic.name}")
+        print(
+            f"digraph {digraph} {syllabic.scalar_value:d}",
+            f'" {syllabic.character} {syllabic.code_point} {syllabic.name}',
+        )
         all_digraphs.add(digraph)
 
 
-if __name__ == '__main__':
-    if '--vim' in sys.argv[1:]:
+if __name__ == "__main__":
+    if "--vim" in sys.argv[1:]:
         create_vim_digraphs()
     else:
         create_tsv()
