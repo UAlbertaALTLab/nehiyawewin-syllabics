@@ -352,7 +352,7 @@ class Consonant(Syllabic):
 
     @property
     def in_plains_cree(self):
-        return self.consonant != "th"
+        return self.sro != "th"
 
     @property
     def qwerty_mnemonic(self):
