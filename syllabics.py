@@ -444,6 +444,8 @@ def create_vim_digraphs() -> None:
     """
     all_digraphs: Set[str] = set()
     for syllabic in plains_cree_syllabics:
+        if not syllabic.in_plains_cree:
+            continue
         digraph = syllabic.vim_digraph
         assert len(digraph) == 2, f"not exactly 2 characters: {syllabic}"
         assert digraph not in all_digraphs, f"Already saw digraph: {syllabic}"
