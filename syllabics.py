@@ -32,6 +32,7 @@ from string import printable as ascii_printable
 from typing import Any, Set
 
 from libsyllabics.types import Consonant, Syllabic, Syllable, Vowel
+from libsyllabics.utils import first
 
 # Matches an optional onset and a vowel.
 pattern = re.compile(r"^(?:[PTCKSMNWY]W?)?([AIOE])\1?$")
