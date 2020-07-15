@@ -466,8 +466,15 @@ def create_vim_digraphs() -> None:
         all_digraphs.add(digraph)
 
 
+def print_roster():
+    for syllabic in roster:
+        print(syllabic.character)
+
+
 if __name__ == "__main__":
     if "--vim" in sys.argv[1:]:
         create_vim_digraphs()
+    elif "--roster" in sys.argv[1:]:
+        print_roster()
     else:
         create_tsv()
