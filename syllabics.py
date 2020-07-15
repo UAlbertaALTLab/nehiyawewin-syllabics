@@ -361,7 +361,13 @@ class Consonant(Syllabic):
 
 def choose_appropriate_variant(variants) -> None:
     for graph, desc in variants:
-        if "WEST-CREE" in desc or "WOODS-CREE" in desc:
+        if (
+            "WEST-CREE" in desc
+            or "WOODS-CREE" in desc
+            # XXX: for some reason nw- syllabics with dot to the right are labelled as
+            # OJIBWAY ¯\_(ツ)_/¯
+            or "OJIBWAY" in desc
+        ):
             roster.add(SyllabicWithVowelBase.new(graph))
             return
     for graph, desc in variants:
