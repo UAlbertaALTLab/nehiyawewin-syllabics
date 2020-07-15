@@ -1,7 +1,7 @@
 all: syllabics.tsv crk.tsv cwd.tsv csw.tsv
 
 syllabics.tsv: syllabics.py
-	./$< > $@
+	./$< --legacy > $@
 
 HEADER := qwerty cans code.point
 
