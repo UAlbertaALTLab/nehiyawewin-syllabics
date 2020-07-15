@@ -26,44 +26,12 @@ digraph definitions for each character.
 """
 
 import csv
-import re
 import sys
 from string import printable as ascii_printable
-from typing import Any, Set
+from typing import Set
 
 from libsyllabics.types import Consonant, Syllabic, Syllable, Vowel
 from libsyllabics.utils import first
-
-# Matches an optional onset and a vowel.
-pattern = re.compile(r"^(?:[PTCKSMNWY]W?)?([AIOE])\1?$")
-
-# Partial Unicode names and their SRO equivalents.
-consonants = {
-    "WEST-CREE P": "p",
-    "FINAL ACUTE": "t",
-    "FINAL GRAVE": "k",
-    "FINAL SHORT HORIZONTAL STROKE": "c",
-    "WEST-CREE M": "m",
-    "FINAL RIGHT HALF RING": "n",
-    "FINAL TOP HALF RING": "s",
-    "FINAL DOUBLE SHORT VERTICAL STROKES": "h",
-    "FINAL PLUS": "y",
-    "TH-CREE TH": "th",
-    "FINAL RING": "w",
-    "HK": "hk",
-    # Used in loanwords only:
-    "MEDIAL L": "l",
-    "MEDIAL R": "r",
-}
-
-
-def to_r(thing: Any) -> Any:
-    """
-    Convert datatype to an R approved format.
-    """
-    if isinstance(thing, bool):
-        return str(thing).upper()
-    return thing
 
 
 def create_tsv() -> None:
@@ -107,7 +75,7 @@ def print_roster():
 
 if __name__ == "__main__":
     if "--legacy" in sys.argv[1:]:
-        from legacy_syllabics_roster import plains_cree_syllabics
+        from libsyllabics.legacy_roster import plains_cree_syllabics
 
     if "--vim" in sys.argv[1:]:
         create_vim_digraphs()

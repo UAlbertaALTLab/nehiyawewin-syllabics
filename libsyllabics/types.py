@@ -7,6 +7,8 @@ from functools import total_ordering
 from typing import Any, Dict
 from unicodedata import name, normalize
 
+from .utils import to_r
+
 COMBINING_CIRCUMFLEX_ACCENT = "\u0302"  # ◌̂
 
 __all__ = [
