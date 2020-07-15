@@ -302,7 +302,7 @@ class Syllable(SyllabicWithVowelBase):
 
     @property
     def qwerty_mnemonic(self):
-        return self.consonant + self._qwerty_mnemonic_for_vowel
+        return f"{self.consonant}{self.is_labialized and 'w' or ''}{self._qwerty_mnemonic_for_vowel}"
 
 
 class Vowel(SyllabicWithVowelBase):
