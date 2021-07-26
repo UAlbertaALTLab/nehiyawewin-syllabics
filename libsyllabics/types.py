@@ -304,7 +304,7 @@ class Consonant(Syllabic):
             "FINAL TOP HALF RING": "s",
             "FINAL DOUBLE SHORT VERTICAL STROKES": "h",
             "FINAL PLUS": "y",
-            "TH-CREE TH": "th",
+            "WOODS-CREE FINAL TH": "th",
             "FINAL RING": "w",
             "HK": "hk",
             # Used in loanwords only:

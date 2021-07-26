@@ -26,7 +26,7 @@ consonants = {
     "FINAL TOP HALF RING": "s",
     "FINAL DOUBLE SHORT VERTICAL STROKES": "h",
     "FINAL PLUS": "y",
-    "TH-CREE TH": "th",
+    "WOODS-CREE FINAL TH": "th",
     "FINAL RING": "w",
     "HK": "hk",
     # Used in loanwords only:
@@ -75,8 +75,10 @@ for i in ALL_SYLLABICS:
     elif desc_str in consonants:
         roster.add(Consonant(character=graph))
     elif "TH-CREE" in desc:
-        variants = onsets_nucleus.setdefault(syllable, set())
-        variants.add((graph, tuple(desc[:-1])))
+        # Skip the mysterious East Cree style TH final (this is gross):
+        if desc[-1] != "TH":
+            variants = onsets_nucleus.setdefault(syllable, set())
+            variants.add((graph, tuple(desc[:-1])))
     elif "WOODS-CREE" in desc and "THW" in desc_str:
         variants = onsets_nucleus.setdefault(syllable, set())
         variants.add((graph, tuple(desc[:-1])))

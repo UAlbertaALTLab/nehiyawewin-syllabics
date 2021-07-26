@@ -76,6 +76,13 @@ def print_roster():
 if __name__ == "__main__":
     if "--legacy" in sys.argv[1:]:
         from libsyllabics.legacy_roster import plains_cree_syllabics
+    else:
+        # I'm not sure what I was thinking. I believe I was going to rewrite this to
+        # parse the syllabics chart instead of the weird Unicode name parsing done by
+        # the "legacy_roster". Which is good, because the Unicode names for syllabics
+        # cannot be trusted!
+        print("Must specify --legacy in command")
+        sys.exit(1)
 
     if "--vim" in sys.argv[1:]:
         create_vim_digraphs()
